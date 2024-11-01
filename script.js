@@ -1,59 +1,70 @@
 // create score variables
 let humanScore = 0;
 let computerScore = 0;
-let rounds = 5; // number of rounds to play
+const buttons = document.querySelectorAll('input')
+let humanDisplay = document.getElementById("humanDisplay")
+let computerDisplay = document.getElementById("computerDisplay")
+let result = document.getElementById("result")
+let computerSelection = document.getElementById("computerSelection")
+let humanSelection = document.getElementById("humanSelection")
 
-// get human input
-function getHumanChoice() {
-    let humanInput = prompt('Select Rock, Paper, or Scissors.');
-    humanInput = humanInput.toLowerCase();
-    if (humanInput === 'rock' || humanInput === 'paper' || humanInput === 'scissors') {
-        return humanInput;
-    } else {
-        console.log('Invalid choice, please try again.');
-        return getHumanChoice(); // Retry if invalid input
-    }
-}
+
+computerDisplay.textContent = `Me: ${computerScore}`
+humanDisplay.textContent = `You: ${humanScore}`
+
+
 
 // create computer input
 function getComputerInput() {
     let computerInput = Math.random() * 100;
     if (computerInput < 33) {
-        return 'paper';
+        return 'Paper';
     } else if (computerInput < 66) {
-        return 'scissors';
+        return 'Scissors';
     } else {
-        return 'rock';
+        return 'Rock';
     }
 }
 
 // play round, comparing human and computer inputs
-function roundStart(humanInput = getHumanChoice(), computerInput = getComputerInput()) {
-    console.log(humanInput);
-    console.log(computerInput);
+function roundStart(humanInput) {
+    computerInput = getComputerInput();
+    humanSelection.textContent = `Your Selection: ${humanInput}`;
+    computerSelection.textContent = `My Selection: ${computerInput}`;
     if (
-        (humanInput === 'rock' && computerInput === 'scissors') ||
-        (humanInput === 'paper' && computerInput === 'rock') ||
-        (humanInput === 'scissors' && computerInput === 'paper')
+        (humanInput === 'Rock' && computerInput === 'Scissors') ||
+        (humanInput === 'Paper' && computerInput === 'Rock') ||
+        (humanInput === 'Scissors' && computerInput === 'Paper')
     ) {
         humanScore++;
-        return `Winner! Your choice: ${humanInput}, beats the computer's choice: ${computerInput}. `;
-    } else if (humanInput === computerInput) {
-        humanScore++;
+        humanDisplay.textContent = `You: ${humanScore}`
+
+        if(humanScore === 5) {
+            result.textContent = ('Congrats! the game is yours.');
+            disabled()
+        }
+    }
+    else if (humanInput === computerInput) {
+    } 
+    else {
         computerScore++;
-        return `Tie round! You both picked ${humanInput}...`;
-    } else {
-        computerScore++;
-        return `You lost this one... ${computerInput} beats ${humanInput}.`;
+        computerDisplay.textContent = `Me: ${computerScore}`
+        
+        if(computerScore === 5) {
+            result.textContent = ('ooooohh... this game goes to me!');
+            disabled()
+        }
     }
 }
 
-// repeat until enough rounds are played
-function playGame() {
-    for (let i = 0; i < rounds; i++) {
-        console.log(roundStart()); // play a round and log the result
-    }
-    console.log(`Game over! Final Scores: Human - ${humanScore}, Computer - ${computerScore}`);
-}
+buttons.forEach(function(button) {
+    button.addEventListener("click", function(){
+        roundStart(button.value)
+    })
+})
 
-playGame(); // start the game
+function disabled() {
+    buttons.forEach(function(button) {
+        button.disabled = true
+    })
+}
